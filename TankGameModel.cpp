@@ -11,9 +11,9 @@
 
 /**
  * TankGameModel default constructor
- * Sets up an invalid TankGameModel
+ * Sets up an empty TankGameModel with the player's tank at 0, 0 facing in +x
  */
-TankGameModel::TankGameModel()
+TankGameModel::TankGameModel() : player(k3d::vec2(0.0, 0.0), k3d::vec2(1.0, 0.0), k3d::vec2(1.0, 0.0))
 {
 }
 

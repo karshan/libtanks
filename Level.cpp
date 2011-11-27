@@ -7,7 +7,6 @@
  * Implementation of the Level class.
  */
 
-#include <iostream> // TODO remove this after removing prints
 #include <fstream>
 #include <sstream>
 #include <string>

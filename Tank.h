@@ -15,15 +15,16 @@
 class Tank {
 
 private:
-    uint32_t  id;
+    static int nextId;
+
+    int  id;
     k3d::vec2 pos;      // position within the level
     k3d::vec2 velocity; // facing direction
     float     speed;    // (magnitude)
     k3d::vec2 aim;      // turret direction
 
 public:
-    Tank();
-    Tank(uint32_t id, k3d::vec2 pos, k3d::vec2 velocity, k3d::vec2 aim);
+    Tank(k3d::vec2 pos, k3d::vec2 velocity, k3d::vec2 aim);
 
     const k3d::vec2 & getPos() const;
     const k3d::vec2 & getVelocity() const;

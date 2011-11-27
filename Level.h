@@ -18,7 +18,7 @@ private:
     int     height; // in blocks
     bool ** map;    // map[x][y] == true iff the (x, y) block is impassable
 
-    void clear();   // XXX should this be public ?
+    void clear();
 public:
     Level();
     ~Level();
