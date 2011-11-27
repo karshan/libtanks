@@ -1,5 +1,5 @@
 CXX=g++
-CFLAGS=-g -I../
+CFLAGS=-Wall -g -I../
 
 OBJS=Level.o Tank.o Missile.o TankGameModel.o TankGameView.o
 LIBNAME=libtanks.a

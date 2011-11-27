@@ -17,8 +17,10 @@
 class TankGameView {
 
 private:
-    static k3d::model floorModel;
-    static k3d::model cubeModel;
+    k3d::model floorModel;
+    k3d::model cubeModel;
+    k3d::model tankHeadModel;
+    k3d::model tankTreadsModel;
 
     TankGameModel * model;
 
@@ -29,6 +31,10 @@ private:
 
 public:
     TankGameView(TankGameModel * model);
+
+    bool loadModels(const char *floorModelFname, const char *cubeModelFname,
+        const char *tankHeadModelFname, const char *tankTreadsModelFname)
+            __attribute__((warn_unused_result));
 
     void renderFrame();
 };

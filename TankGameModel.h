@@ -35,8 +35,7 @@ public:
     const vector<Missile> & getMissiles() const;
     const Level & getLevel() const;
 
-    // Experimental
-    bool loadTestLevel() __attribute__((warn_unused_result));
+    bool loadLevel(const char *levelFname) __attribute__((warn_unused_result));
 
 };
 

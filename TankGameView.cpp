@@ -13,14 +13,27 @@
 
 using k3d::gl;
 
-k3d::model TankGameView::floorModel("/sdcard/tanks/floor.obj");
-k3d::model TankGameView::cubeModel("/sdcard/tanks/wall.obj");
-
 /**
  * TankGameView parameterized constructor
- * sets up a TankGameView associated with the TankGameModel passed in
+ * sets up a TankGameView associated with the TankGameModel passed in.
  */
 TankGameView::TankGameView(TankGameModel * model) : model(model) {}
+
+/**
+ * loadModels()
+ * ModelFname's are path's to wavefront obj files from which to load the respective
+ * models. (remember k3d::model has limited support for wavefront obj's)
+ */
+bool TankGameView::loadModels(const char *floorModelFname,
+                              const char *cubeModelFname,
+                              const char *tankHeadModelFname,
+                              const char *tankTreadsModelFname)
+{
+    return floorModel.loadObj(floorModelFname) &
+    cubeModel.loadObj(cubeModelFname) &
+    tankHeadModel.loadObj(tankHeadModelFname) &
+    tankTreadsModel.loadObj(tankTreadsModelFname);
+}
 
 /**
  * drawLevel()
@@ -40,7 +53,7 @@ void TankGameView::drawLevel()
     gl::mModelView.translatef(1.0, 1.0, 0.0);
     gl::sendMatrices();
 
-    gl::sendColor(0.431, 0.254, 0.254, 1.0); // Brown
+    gl::sendColor(0.431, 0.254, 0.254, 1.0); // Brown floor
 
     TankGameView::floorModel.draw();
 
@@ -51,7 +64,7 @@ void TankGameView::drawLevel()
                 gl::mModelView.translatef((float)x, (float)y, 0.0);
                 gl::sendMatrices();
 
-                gl::sendColor(1.0, 0.0, 0.0, 1.0);
+                gl::sendColor(1.0, 0.0, 0.0, 1.0); // Red walls
 
                 TankGameView::cubeModel.draw();
             }

@@ -56,8 +56,7 @@ const Level & TankGameModel::getLevel() const
     return level;
 }
 
-// Experimental
-bool TankGameModel::loadTestLevel()
+bool TankGameModel::loadLevel(const char *levelFname)
 {
-   return level.loadFromFile("/sdcard/tanks/simple.lvl");
+   return level.loadFromFile(levelFname);
 }
