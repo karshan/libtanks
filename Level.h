@@ -27,7 +27,7 @@ public:
     int getHeight() const;
     const bool ** getMap() const;
 
-    bool loadFromFile(const char *filename);
+    bool loadFromFile(const char *filename) __attribute__((warn_unused_result));
 
 };
 

@@ -13,8 +13,8 @@
 
 using k3d::gl;
 
-k3d::model TankGameView::floorModel("models/floor.obj");
-k3d::model TankGameView::cubeModel("models/wall.obj");
+k3d::model TankGameView::floorModel("/sdcard/tanks/floor.obj");
+k3d::model TankGameView::cubeModel("/sdcard/tanks/wall.obj");
 
 /**
  * TankGameView parameterized constructor
@@ -85,7 +85,7 @@ void TankGameView::drawMissile(const Missile & missile)
 void TankGameView::renderFrame()
 {
     k3d::mat4 tMat;
-    const Tank & player = model->getPlayer();
+    //const Tank & player = model->getPlayer();
     //const k3d::vec2 & myPos = player.getPos();
     k3d::vec2 myPos(model->getLevel().getWidth()/2.0, model->getLevel().getHeight()/2.0);
 

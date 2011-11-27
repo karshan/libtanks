@@ -36,7 +36,7 @@ public:
     const Level & getLevel() const;
 
     // Experimental
-    void loadTestLevel();
+    bool loadTestLevel() __attribute__((warn_unused_result));
 
 };
 

@@ -102,7 +102,7 @@ bool Level::loadFromFile(const char *filename)
     int y = height - 1;
     while (!in.eof() && y >= 0) {
         std::getline(in, line);
-        if (line.size() != width) {
+        if (line.size() != (unsigned)width) {
             clear();
             return false;
         }

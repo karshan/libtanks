@@ -17,7 +17,7 @@ int Tank::nextId = 0; // This is used to figure out the next id to give a tank
  * sets up the Tank from the params you passed in and gives it a unique id
  */
 Tank::Tank(k3d::vec2 pos, k3d::vec2 velocity, k3d::vec2 aim) :
-    pos(pos), velocity(velocity), aim(aim), speed(0.0) { id = Tank::nextId++; }
+    pos(pos), velocity(velocity), speed(0.0), aim(aim) { id = Tank::nextId++; }
 
 /**
  * getPos()
