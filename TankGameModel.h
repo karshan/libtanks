@@ -21,14 +21,21 @@ using std::vector;
 
 class TankGameModel {
 
+    friend class TankGameController;
+
 private:
     Level           level;
     Tank            player;
     vector<Tank>    enemies;
     vector<Missile> missiles;
 
+    // helpers
+    void moveTank(Tank & tank);
+
 public:
     TankGameModel();
+
+    void step();
 
     const Tank & getPlayer() const;
     const vector<Tank> & getEnemies() const;

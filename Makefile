@@ -1,7 +1,7 @@
 CXX=g++
 CFLAGS=-Wall -g -I../
 
-OBJS=Level.o Tank.o Missile.o TankGameModel.o TankGameView.o
+OBJS=Level.o Tank.o Missile.o TankGameModel.o TankGameView.o TankGameController.o KeyboardController.o
 LIBNAME=libtanks.a
 
 all: $(LIBNAME)

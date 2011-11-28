@@ -38,6 +38,7 @@ public:
     void setSpeed(float speed);
     void setAim(const k3d::vec2 & aim);
     void setIsDead(bool isDead);
+
 };
 
 #endif // _TANK_H
