@@ -7,13 +7,15 @@
  * Implementation of the TankGameModel class
  */
 
+#include <cstdlib>
+
 #include "TankGameModel.h"
 
 /**
  * TankGameModel default constructor
- * Sets up an empty TankGameModel with the player's tank at 0, 0 facing in +x
+ * Sets up an empty TankGameModel
  */
-TankGameModel::TankGameModel() : player(k3d::vec2(0.0, 0.0), k3d::vec2(1.0, 0.0), k3d::vec2(1.0, 0.0))
+TankGameModel::TankGameModel()
 {
 }
 
@@ -56,7 +58,25 @@ const Level & TankGameModel::getLevel() const
     return level;
 }
 
+// expects stdlib's PNRG to be called before
+// aka call srand() sometime before (once)
 bool TankGameModel::loadLevel(const char *levelFname)
 {
-   return level.loadFromFile(levelFname);
+    if (level.loadFromFile(levelFname) == false)
+        return false;
+
+    player.setVelocity(k3d::vec2(1.0, 0.0));
+    player.setAim(k3d::vec2(1.0, 0.0));
+    // Pick player start position
+    // XXX theres probably a better way to do this
+    const bool ** map = level.getMap();
+    while (1) {
+        int x = rand() % level.getWidth();
+        int y = rand() % level.getHeight();
+        if (map[x][y] == false) {
+            player.setPos(k3d::vec2(x, y));
+            player.setIsDead(false);
+            return true;
+        }
+    }
 }

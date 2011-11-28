@@ -25,7 +25,7 @@ private:
     TankGameModel * model;
 
     // Helpers
-    void drawLevel();
+    void drawLevel(const Level & level);
     void drawTank(const Tank & tank);
     void drawMissile(const Missile & missile);
 

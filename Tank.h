@@ -22,15 +22,22 @@ private:
     k3d::vec2 velocity; // facing direction
     float     speed;    // (magnitude)
     k3d::vec2 aim;      // turret direction
+    bool isDead;
 
 public:
-    Tank(k3d::vec2 pos, k3d::vec2 velocity, k3d::vec2 aim);
+    Tank();
 
+    bool getIsDead() const;
     const k3d::vec2 & getPos() const;
     const k3d::vec2 & getVelocity() const;
     float getSpeed() const;
     const k3d::vec2 & getAim() const;
 
+    void setPos(const k3d::vec2 & pos);
+    void setVelocity(const k3d::vec2 & velocity);
+    void setSpeed(float speed);
+    void setAim(const k3d::vec2 & aim);
+    void setIsDead(bool isDead);
 };
 
 #endif // _TANK_H

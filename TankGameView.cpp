@@ -39,12 +39,11 @@ bool TankGameView::loadModels(const char *floorModelFname,
  * drawLevel()
  * helper function that actually renders a Level object to the screen.
  */
-void TankGameView::drawLevel()
+void TankGameView::drawLevel(const Level & level)
 {
     // floorModel is a rect from (-1, -1, 0) to (1, 1, 0)
     // cubeModel is a cube from (0, 0, 0) to (1, 1, 1)
 
-    const Level & level = model->getLevel();
     const bool ** map = level.getMap();
 
     k3d::mat4 tMat = gl::mModelView;
@@ -55,7 +54,7 @@ void TankGameView::drawLevel()
 
     gl::sendColor(0.431, 0.254, 0.254, 1.0); // Brown floor
 
-    TankGameView::floorModel.draw();
+    floorModel.draw();
 
     for (int x = 0; x < level.getWidth(); x++) {
         for (int y = 0; y < level.getHeight(); y++) {
@@ -66,10 +65,11 @@ void TankGameView::drawLevel()
 
                 gl::sendColor(1.0, 0.0, 0.0, 1.0); // Red walls
 
-                TankGameView::cubeModel.draw();
+                cubeModel.draw();
             }
         }
     }
+    gl::mModelView = tMat;
 }
 
 /**
@@ -78,6 +78,50 @@ void TankGameView::drawLevel()
  */
 void TankGameView::drawTank(const Tank & tank)
 {
+    /**
+     * Tank models draw a tank centred and on the xy plane
+     * i.e. the tank lies in z > 0. It also is within the
+     * canonical GL volume. It is aiming and facing in -Y
+     */
+
+    k3d::mat4 tMat = gl::mModelView;
+    const k3d::vec2 & pos = tank.getPos();
+    const k3d::vec2 & velocity = tank.getVelocity();
+    const k3d::vec2 & aim = tank.getAim();
+
+    float _velRotation[4][4] = {
+        { -velocity.y,  velocity.x, 0.0, 0.0 },
+        { -velocity.x, -velocity.y, 0.0, 0.0 },
+        { 0.0, 0.0, 1.0, 0.0 },
+        { 0.0, 0.0, 0.0, 1.0 },
+    };
+
+    float _aimRotation[4][4] = {
+        { -aim.y,  aim.x, 0.0, 0.0 },
+        { -aim.x, -aim.y, 0.0, 0.0 },
+        { 0.0, 0.0, 1.0, 0.0 },
+        { 0.0, 0.0, 0.0, 1.0 },
+    };
+
+    k3d::mat4 velRotation(_velRotation);
+    k3d::mat4 aimRotation(_aimRotation);
+
+    gl::sendColor(0.1, 0.8, 0.29, 1.0); // Some shade of blue
+
+    gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.5, 0.0);
+    gl::mModelView = gl::mModelView * velRotation;
+    gl::mModelView.scalef(0.5, 0.5, 1.0);
+    gl::sendMatrices();
+    tankTreadsModel.draw();
+
+    gl::mModelView = tMat;
+    gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.5, 0.0);
+    gl::mModelView = gl::mModelView * aimRotation;
+    gl::mModelView.scalef(0.5, 0.5, 1.0);
+    gl::sendMatrices();
+    tankHeadModel.draw();
+
+    gl::mModelView = tMat;
 }
 
 /**
@@ -97,18 +141,21 @@ void TankGameView::drawMissile(const Missile & missile)
  */
 void TankGameView::renderFrame()
 {
-    k3d::mat4 tMat;
-    //const Tank & player = model->getPlayer();
-    //const k3d::vec2 & myPos = player.getPos();
-    k3d::vec2 myPos(model->getLevel().getWidth()/2.0, model->getLevel().getHeight()/2.0);
+    const Level & level = model->getLevel();
+    const Tank & player = model->getPlayer();
+    const k3d::vec2 & playerPos = player.getPos();
 
     gl::mModelView.loadIdentity();
-    gl::mModelView.lookAt(k3d::vec3(myPos.x, myPos.y - 1.5, 7.0),
-        k3d::vec3(myPos.x, myPos.y, 0.0), k3d::vec3(0.0, 1.0, 0.0));
+    // set the eye above the player looking down on him
+    gl::mModelView.lookAt(k3d::vec3(playerPos.x, playerPos.y - 1.5, 7.0),
+        k3d::vec3(playerPos.x, playerPos.y, 0.0), k3d::vec3(0.0, 1.0, 0.0));
 
     gl::vLight0 = k3d::vec3(4.0, 3.0, 20.0);
     gl::sendLight0();
 
-    tMat = gl::mModelView;
-    drawLevel();
+    drawLevel(level);
+
+    if (player.getIsDead() == false) {
+        drawTank(player);
+    }
 }
