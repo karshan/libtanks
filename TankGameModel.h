@@ -43,7 +43,7 @@ public:
 
     const Tank & getPlayer() const;
     const vector<Tank> & getEnemies() const;
-    const vector<Missile> & getMissiles() const;
+    vector<Missile> & getMissiles(); // this is not const since views read missiles and change them based on exploding animation
     const Level & getLevel() const;
 
     bool loadLevel(const char *levelFname) __attribute__((warn_unused_result));

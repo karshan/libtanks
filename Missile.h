@@ -15,10 +15,12 @@
 class Missile {
 
 private:
-    uint32_t  tankId;   // the Id of the tank who fired this missile
-    k3d::vec2 pos;      // position within the level
-    k3d::vec2 velocity; // direction travelling in
-    float     speed;    // magnitude
+    uint32_t  tankId;       // the Id of the tank who fired this missile
+    k3d::vec2 pos;          // position within the level
+    k3d::vec2 velocity;     // direction travelling in
+    float     speed;        // magnitude
+    bool      exploding;    // set by model
+    bool      exploded;     // set by view
 
 public:
     Missile(uint32_t tankId, k3d::vec2 pos, k3d::vec2 velocity, float speed);
@@ -27,8 +29,12 @@ public:
     const k3d::vec2 & getPos() const;
     const k3d::vec2 & getVelocity() const;
     float getSpeed() const;
+    bool getExploding() const;
+    bool getExploded() const;
 
     void setPos(const k3d::vec2 & pos);
+    void setExploding(bool exploding);
+    void setExploded(bool exploded);
 };
 
 #endif // _MISSILE_H

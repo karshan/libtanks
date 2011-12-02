@@ -80,18 +80,25 @@ void TankGameView::drawLevel(const Level & level)
 
 /**
  * drawMissile()
- * helper function that actually renders a Missile object to the screen.
+ * helper function that actually renders a Missile object to the screen. Sets
+ * the missile as exploded if it was exploding and the exploding animation is
+ * complete.
  */
-void TankGameView::drawMissile(const Missile & missile)
+void TankGameView::drawMissile(Missile & missile)
 {
     k3d::mat4 tMat = gl::mModelView;
     const k3d::vec2 & pos = missile.getPos();
 
     gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.34, 0.0);
-    gl::mModelView.scalef(0.2, 0.3, 0.5);
+    if (missile.getExploding() == true) {
+        gl::mModelView.scalef(1.0, 1.0, 3.0);
+        missile.setExploded(true); // will be pruned by model
+    } else {
+        gl::mModelView.scalef(0.2, 0.3, 0.5);
+    }
     gl::sendMatrices();
 
-    gl::sendColor(1.0, 1.0, 1.0, 1.0);
+    gl::sendColor(0.0, 0.0, 0.0, 1.0);
 
     missileModel.draw();
 
@@ -162,7 +169,7 @@ void TankGameView::renderFrame()
     const Level & level = model->getLevel();
     const Tank & player = model->getPlayer();
     const k3d::vec2 & playerPos = player.getPos();
-    const vector<Missile> & missiles = model->getMissiles();
+    vector<Missile> & missiles = model->getMissiles();
 
     gl::mModelView.loadIdentity();
     // set the eye above the player looking down on him
@@ -179,6 +186,8 @@ void TankGameView::renderFrame()
     }
 
     for (unsigned i = 0; i < missiles.size(); i++) {
-        drawMissile(missiles[i]);
+        if (missiles[i].getExploded() == false) { // technically over here no missiles will have exploded since they will be pruned... but since we should try to make no assumptions of the calling order of step() and renderFrame()
+            drawMissile(missiles[i]);
+        }
     }
 }

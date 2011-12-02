@@ -45,10 +45,10 @@ const vector<Tank> & TankGameModel::getEnemies() const
 
 /**
  * getMissiles()
- * returns a constant reference to a vector of Missile objects that represent
+ * returns a reference to a vector of Missile objects that represent
  * all the missiles currently in the game.
  */
-const vector<Missile> & TankGameModel::getMissiles() const
+vector<Missile> & TankGameModel::getMissiles()
 {
     return missiles;
 }
@@ -139,7 +139,13 @@ void TankGameModel::moveTank(Tank & tank)
 void TankGameModel::moveMissile(Missile & missile)
 {
     const k3d::vec2 & pos = missile.getPos();
-    missile.setPos(pos + missile.getSpeed()*missile.getVelocity());
+    k3d::vec2 newPos = pos + missile.getSpeed()*missile.getVelocity();
+    k3d::vec2 missilebox(0.05, 0.01);
+    if (collideWithLevel(newPos, missile.getVelocity(), missilebox)) {
+        missile.setExploding(true);
+        return;
+    }
+    missile.setPos(newPos);
 }
 
 void TankGameModel::fireMissile()
@@ -156,6 +162,9 @@ void TankGameModel::step()
     if (player.getIsDead() == false) {
         moveTank(player);
     }
-    for (unsigned i = 0; i < missiles.size(); i++)
-        moveMissile(missiles[i]);
+    for (unsigned i = 0; i < missiles.size(); i++) {
+        if (missiles[i].getExploding() == false) {
+            moveMissile(missiles[i]);
+        }
+    }
 }
