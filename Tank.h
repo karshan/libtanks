@@ -22,10 +22,12 @@ private:
     k3d::vec2 velocity; // facing direction
     float     speed;    // (magnitude)
     k3d::vec2 aim;      // turret direction
-    bool isDead;
+    bool      isDead;
+    k3d::vec2 collisionBox;
 
 public:
     Tank();
+// TODO    Tank(k3d::vec2 pos, k3d::vec2 velocity, float speed, k3d::vec2 aim)
 
     bool getIsDead() const;
     const k3d::vec2 & getPos() const;
@@ -33,6 +35,7 @@ public:
     float getSpeed() const;
     const k3d::vec2 & getAim() const;
     int getId() const;
+    k3d::vec2 getCollisionBox() const;
 
     void setPos(const k3d::vec2 & pos);
     void setVelocity(const k3d::vec2 & velocity);

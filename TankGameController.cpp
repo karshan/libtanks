@@ -17,6 +17,11 @@ void TankGameController::setPlayerVelocity(const k3d::vec2 & velocity)
     model->player.setVelocity(velocity);
 }
 
+void TankGameController::setPlayerAim(const k3d::vec2 & aim)
+{
+    model->player.setAim(aim);
+}
+
 void TankGameController::setPlayerSpeed(float speed)
 {
     model->player.setSpeed(speed);
@@ -30,6 +35,11 @@ const k3d::vec2 & TankGameController::getPlayerPos() const
 const k3d::vec2 & TankGameController::getPlayerVelocity() const
 {
     return model->player.getVelocity();
+}
+
+const k3d::vec2 & TankGameController::getPlayerAim() const
+{
+    return model->player.getAim();
 }
 
 void TankGameController::fireMissile()

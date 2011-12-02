@@ -39,6 +39,18 @@ void KeyboardController::keydown(unsigned char key)
         std::cout << "pos: " << k3d::vec3(getPlayerPos(), 0.0) << " vel: " << k3d::vec3(getPlayerVelocity(), 0.0) << '\n';
         fireMissile();
     }
+    else if (key == 'q') {
+        k3d::mat4 m;
+        m.rotatef(k3d::vec3(0.0, 0.0, 1.0), -5.0);
+        k3d::vec3 t(m * k3d::vec3(getPlayerAim(), 0.0));
+        setPlayerAim(k3d::vec2(t.x, t.y));
+    }
+    else if (key == 'e') {
+        k3d::mat4 m;
+        m.rotatef(k3d::vec3(0.0, 0.0, 1.0), 5.0);
+        k3d::vec3 t(m * k3d::vec3(getPlayerAim(), 0.0));
+        setPlayerAim(k3d::vec2(t.x, t.y));
+    }
 }
 
 void KeyboardController::keyup(unsigned char key)

@@ -86,16 +86,27 @@ void TankGameView::drawLevel(const Level & level)
  */
 void TankGameView::drawMissile(Missile & missile)
 {
+    const k3d::vec2 aim(missile.getVelocity());
+    float _aimRotation[4][4] = {
+        { aim.x, aim.y, 0.0, 0.0 },
+        { -aim.y, aim.x, 0.0, 0.0 },
+        { 0.0, 0.0, 1.0, 0.0 },
+        { 0.0, 0.0, 0.0, 1.0 },
+    };
+
     k3d::mat4 tMat = gl::mModelView;
+    k3d::mat4 aimRotation(_aimRotation);
     const k3d::vec2 & pos = missile.getPos();
 
     gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.34, 0.0);
     if (missile.getExploding() == true) {
+        gl::mModelView.translatef(0.0, -0.4, 0.0); // hack should change 3dmodel
         gl::mModelView.scalef(1.0, 1.0, 3.0);
-        missile.setExploded(true); // will be pruned by model
+        missile.setExploded(true); // will be pruned by TankGameModel
     } else {
         gl::mModelView.scalef(0.2, 0.3, 0.5);
     }
+    gl::mModelView = gl::mModelView * aimRotation;
     gl::sendMatrices();
 
     gl::sendColor(0.0, 0.0, 0.0, 1.0);
@@ -170,6 +181,7 @@ void TankGameView::renderFrame()
     const Tank & player = model->getPlayer();
     const k3d::vec2 & playerPos = player.getPos();
     vector<Missile> & missiles = model->getMissiles();
+    const vector<Tank> & enemies = model->getEnemies();
 
     gl::mModelView.loadIdentity();
     // set the eye above the player looking down on him
@@ -183,6 +195,11 @@ void TankGameView::renderFrame()
 
     if (player.getIsDead() == false) {
         drawTank(player);
+    }
+    for (unsigned i = 0; i < enemies.size(); i++) {
+        if (enemies[i].getIsDead() == false) {
+            drawTank(enemies[i]);
+        }
     }
 
     for (unsigned i = 0; i < missiles.size(); i++) {

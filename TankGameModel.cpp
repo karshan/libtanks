@@ -81,6 +81,17 @@ bool TankGameModel::loadLevel(const char *levelFname)
         if (map[x][y] == false) {
             player.setPos(k3d::vec2(x, y));
             player.setIsDead(false);
+
+            // TODO remove
+            Tank t;
+            t.setSpeed(0.0);
+            t.setVelocity(k3d::vec2(-1.0, 0.0));
+            t.setAim(k3d::vec2(0.0, -1.0));
+            t.setPos(k3d::vec2(x, y));
+            t.setIsDead(false);
+            enemies.clear();
+            enemies.push_back(t);
+
             return true;
         }
     }
@@ -111,15 +122,22 @@ bool TankGameModel::collideWithLevel(k3d::vec2 & pos, const k3d::vec2 & velocity
     return collided;
 }
 
+bool TankGameModel::collideWithTank(k3d::vec2 & pos, const k3d::vec2 & velocity, const k3d::vec2 & box, const Tank & tank)
+{
+    bool check;
+    pos = collide(pos, box, velocity, tank.getPos(), tank.getCollisionBox(), tank.getVelocity(), check);
+    return check;
+}
+
 void TankGameModel::moveTank(Tank & tank)
 {
     const k3d::vec2 & pos = tank.getPos();
     float speed = tank.getSpeed();
     const k3d::vec2 & velocity = tank.getVelocity();
 
-    k3d::vec2 tankbox(0.3, 0.15); // width/2 by height/2 of collision box for tank
+    k3d::vec2 tankBox(tank.getCollisionBox()); // width/2 by height/2 of collision box for tank
     k3d::vec2 tmpPos(pos);
-    collideWithLevel(tmpPos, velocity, tankbox);  // get into a consistent state
+    collideWithLevel(tmpPos, velocity, tankBox);  // get into a consistent state
     tank.setPos(tmpPos);
 
     k3d::vec2 newPos[3];
@@ -129,7 +147,7 @@ void TankGameModel::moveTank(Tank & tank)
 
     for (int ind = 0; ind < 3; ind++) {
         tmpPos = newPos[ind];
-        if (!collideWithLevel(tmpPos, velocity, tankbox)) {
+        if (!collideWithLevel(tmpPos, velocity, tankBox)) {
             tank.setPos(newPos[ind]);
             return;
         }
@@ -139,12 +157,30 @@ void TankGameModel::moveTank(Tank & tank)
 void TankGameModel::moveMissile(Missile & missile)
 {
     const k3d::vec2 & pos = missile.getPos();
+    const k3d::vec2 & velocity = missile.getVelocity();
+    Tank tank;
     k3d::vec2 newPos = pos + missile.getSpeed()*missile.getVelocity();
-    k3d::vec2 missilebox(0.05, 0.01);
-    if (collideWithLevel(newPos, missile.getVelocity(), missilebox)) {
+    k3d::vec2 tmpPos(newPos);
+    k3d::vec2 missileBox(missile.getCollisionBox());
+
+    if (collideWithLevel(newPos, missile.getVelocity(), missileBox)) {
         missile.setExploding(true);
         return;
     }
+
+    if (collideWithTank(tmpPos, velocity, missileBox, player)) {
+        if (missile.getTankId() != player.getId()) {
+            player.setIsDead(true);
+        }
+    }
+    for (unsigned i = 0; i < enemies.size(); i++) {
+        if (collideWithTank(tmpPos, velocity, missileBox, enemies[i])) {
+            if (missile.getTankId() != enemies[i].getId()) {
+                enemies[i].setIsDead(true);
+            }
+        }
+    }
+
     missile.setPos(newPos);
 }
 
@@ -162,6 +198,12 @@ void TankGameModel::step()
     if (player.getIsDead() == false) {
         moveTank(player);
     }
+    for (unsigned i = 0; i < enemies.size(); i++) {
+        if (enemies[i].getIsDead() == false) {
+            moveTank(enemies[i]);
+        }
+    }
+
     for (unsigned i = 0; i < missiles.size(); i++) {
         if (missiles[i].getExploding() == false) {
             moveMissile(missiles[i]);

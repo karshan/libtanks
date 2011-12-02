@@ -24,8 +24,10 @@ public:
 
     const k3d::vec2 & getPlayerPos() const;
     const k3d::vec2 & getPlayerVelocity() const;
+    const k3d::vec2 & getPlayerAim() const;
 
     void setPlayerVelocity(const k3d::vec2 & velocity);
+    void setPlayerAim(const k3d::vec2 & aim);
     void setPlayerSpeed(float speed);
 
     void fireMissile();

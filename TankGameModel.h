@@ -26,7 +26,9 @@ class TankGameModel {
 private:
     Level           level;
     Tank            player;
+    char pad[100];
     vector<Tank>    enemies;
+    char pad2[100];
     vector<Missile> missiles;
 
     void fireMissile();
@@ -35,6 +37,7 @@ private:
     void moveTank(Tank & tank);
     void moveMissile(Missile & missile);
     bool collideWithLevel(k3d::vec2 & pos, const k3d::vec2 & velocity, const k3d::vec2 & box);
+    bool collideWithTank(k3d::vec2 & pos, const k3d::vec2 & velocity, const k3d::vec2 & box, const Tank & tank);
 
 public:
     TankGameModel();

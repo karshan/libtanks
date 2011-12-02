@@ -11,10 +11,11 @@
 
 // TODO function headers (comments)
 
-Missile::Missile(uint32_t tankId, k3d::vec2 pos, k3d::vec2 velocity, float speed) :
-    tankId(tankId), pos(pos), velocity(velocity), speed(speed), exploding(false) {}
+Missile::Missile(int tankId, k3d::vec2 pos, k3d::vec2 velocity, float speed) :
+    tankId(tankId), pos(pos), velocity(velocity), speed(speed), exploding(false),
+    exploded(false), collisionBox(0.05, 0.01) {}
 
-uint32_t Missile::getTankId() const
+int Missile::getTankId() const
 {
     return tankId;
 }
@@ -42,6 +43,11 @@ bool Missile::getExploding() const
 bool Missile::getExploded() const
 {
     return exploded;
+}
+
+k3d::vec2 Missile::getCollisionBox() const
+{
+    return collisionBox;
 }
 
 void Missile::setPos(const k3d::vec2 & pos)

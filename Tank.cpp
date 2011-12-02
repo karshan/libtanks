@@ -17,7 +17,7 @@ int Tank::nextId = 0; // This is used to figure out the next id to give a tank
  * sets up a dead Tank with a unique id
  */
 Tank::Tank() : pos(0.0, 0.0), velocity(1.0, 0.0), speed(0.0), aim(1.0, 0.0),
-    isDead(true)
+    isDead(true), collisionBox(0.3, 0.15)
 {
     id = Tank::nextId++;
 }
@@ -74,6 +74,11 @@ const k3d::vec2 & Tank::getAim() const
 int Tank::getId() const
 {
     return id;
+}
+
+k3d::vec2 Tank::getCollisionBox() const
+{
+    return collisionBox;
 }
 
 void Tank::setPos(const k3d::vec2 & pos)
