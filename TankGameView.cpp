@@ -98,18 +98,17 @@ void TankGameView::drawMissile(Missile & missile)
     k3d::mat4 aimRotation(_aimRotation);
     const k3d::vec2 & pos = missile.getPos();
 
-    gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.34, 0.0);
+    gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.5, 0.0);
+    gl::mModelView = gl::mModelView * aimRotation;
     if (missile.getExploding() == true) {
-        gl::mModelView.translatef(0.0, -0.4, 0.0); // hack should change 3dmodel
-        gl::mModelView.scalef(1.0, 1.0, 3.0);
+        gl::mModelView.scalef(0.5, 1.0, 3.0);
         missile.setExploded(true); // will be pruned by TankGameModel
     } else {
         gl::mModelView.scalef(0.2, 0.3, 0.5);
     }
-    gl::mModelView = gl::mModelView * aimRotation;
     gl::sendMatrices();
 
-    gl::sendColor(0.0, 0.0, 0.0, 1.0);
+    gl::sendColor(1.0, 1.0, 0.8, 1.0);
 
     missileModel.draw();
 

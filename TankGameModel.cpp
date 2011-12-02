@@ -171,12 +171,16 @@ void TankGameModel::moveMissile(Missile & missile)
     if (collideWithTank(tmpPos, velocity, missileBox, player)) {
         if (missile.getTankId() != player.getId()) {
             player.setIsDead(true);
+            missile.setExploding(true);
+            return;
         }
     }
     for (unsigned i = 0; i < enemies.size(); i++) {
         if (collideWithTank(tmpPos, velocity, missileBox, enemies[i])) {
             if (missile.getTankId() != enemies[i].getId()) {
                 enemies[i].setIsDead(true);
+                missile.setExploding(true);
+                return;
             }
         }
     }

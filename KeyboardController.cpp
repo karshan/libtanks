@@ -36,7 +36,6 @@ void KeyboardController::keydown(unsigned char key)
         setPlayerVelocity(k3d::vec2(t.x, t.y));
     }
     else if (key == 'h') {
-        std::cout << "pos: " << k3d::vec3(getPlayerPos(), 0.0) << " vel: " << k3d::vec3(getPlayerVelocity(), 0.0) << '\n';
         fireMissile();
     }
     else if (key == 'q') {
