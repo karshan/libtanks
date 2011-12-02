@@ -31,7 +31,7 @@ private:
     char pad2[100];
     vector<Missile> missiles;
 
-    void fireMissile();
+    void fireMissile(const Tank & tank);
 
     // helpers
     void moveTank(Tank & tank);

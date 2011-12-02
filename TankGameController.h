@@ -30,7 +30,7 @@ public:
     void setPlayerAim(const k3d::vec2 & aim);
     void setPlayerSpeed(float speed);
 
-    void fireMissile();
+    void firePlayerMissile();
 
 };
 

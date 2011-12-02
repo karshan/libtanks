@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <cstdlib>
 
 #include "Level.h"
 
@@ -123,4 +124,17 @@ bool Level::loadFromFile(const char *filename)
     }
 
     return true;
+}
+
+k3d::vec2 Level::getEmptySpot()
+{
+    // XXX theres probably a better way to do this
+    // FIXME also if the map is full of 1's what should we do ?
+    while (1) {
+        int x = rand() % width;
+        int y = rand() % height;
+        if (map[x][y] == false) {
+            return k3d::vec2(x, y);
+        }
+    }
 }

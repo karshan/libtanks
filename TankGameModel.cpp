@@ -72,26 +72,23 @@ bool TankGameModel::loadLevel(const char *levelFname)
     player.setSpeed(0.0);
     player.setVelocity(k3d::vec2(1.0, 0.0));
     player.setAim(k3d::vec2(1.0, 0.0));
+    player.setIsDead(false);
     // Pick player start position
-    // XXX theres probably a better way to do this
     const bool ** map = level.getMap();
-    while (1) {
-        int x = rand() % level.getWidth();
-        int y = rand() % level.getHeight();
-        if (map[x][y] == false) {
-            player.setPos(k3d::vec2(x, y));
-            player.setIsDead(false);
+    player.setPos(level.getEmptySpot());
 
-            // TODO remove
-            Tank t;
-            t.setSpeed(0.0);
-            t.setVelocity(k3d::vec2(-1.0, 0.0));
-            t.setAim(k3d::vec2(0.0, -1.0));
-            t.setPos(k3d::vec2(x, y));
-            t.setIsDead(false);
+    // Add an enemy. Experimental
+    Tank t;
+    t.setSpeed(0.0);
+    t.setVelocity(k3d::vec2(-1.0, 0.0));
+    t.setAim(k3d::vec2(0.0, -1.0));
+    t.setIsDead(false);
+
+    while (1) {
+        t.setPos(level.getEmptySpot());
+        if (t.getPos().x != player.getPos().x || t.getPos().y != player.getPos().y) {
             enemies.clear();
             enemies.push_back(t);
-
             return true;
         }
     }
@@ -188,9 +185,9 @@ void TankGameModel::moveMissile(Missile & missile)
     missile.setPos(newPos);
 }
 
-void TankGameModel::fireMissile()
+void TankGameModel::fireMissile(const Tank & tank)
 {
-    missiles.push_back(Missile(player.getId(), player.getPos() + 0.3*player.getAim(), player.getAim(), 0.1));
+    missiles.push_back(Missile(tank.getId(), tank.getPos() + 0.3*tank.getAim(), tank.getAim(), 0.1));
 }
 
 /**
@@ -199,6 +196,22 @@ void TankGameModel::fireMissile()
  */
 void TankGameModel::step()
 {
+    static int should_ai_fire = 0;
+    // random ai stuff for fun
+    if (player.getIsDead() == false) {
+        for (unsigned i = 0; i < enemies.size(); i++) {
+            if (enemies[i].getIsDead() == false) {
+                enemies[i].setVelocity(player.getPos() - enemies[i].getPos());
+                enemies[i].setAim(player.getPos() - enemies[i].getPos());
+                enemies[i].setSpeed(0.02);
+                if (++should_ai_fire == 100) {
+                    should_ai_fire = 0;
+                    fireMissile(enemies[i]);
+                }
+            }
+        }
+    }
+
     if (player.getIsDead() == false) {
         moveTank(player);
     }

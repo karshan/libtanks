@@ -42,7 +42,7 @@ const k3d::vec2 & TankGameController::getPlayerAim() const
     return model->player.getAim();
 }
 
-void TankGameController::fireMissile()
+void TankGameController::firePlayerMissile()
 {
-    model->fireMissile();
+    model->fireMissile(model->player);
 }

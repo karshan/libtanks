@@ -11,6 +11,8 @@
  * is part of the model description (MVC).
  */
 
+#include <libk3d/k3d.h>
+
 class Level {
 
 private:
@@ -28,6 +30,7 @@ public:
     const bool ** getMap() const;
 
     bool loadFromFile(const char *filename) __attribute__((warn_unused_result));
+    k3d::vec2 getEmptySpot();
 
 };
 

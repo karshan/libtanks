@@ -36,7 +36,7 @@ void KeyboardController::keydown(unsigned char key)
         setPlayerVelocity(k3d::vec2(t.x, t.y));
     }
     else if (key == 'h') {
-        fireMissile();
+        firePlayerMissile();
     }
     else if (key == 'q') {
         k3d::mat4 m;
