@@ -7,6 +7,7 @@
  * Implementation of KeyboardController
  */
 
+#include <iostream> // TODO remove
 #include <libk3d/k3d.h>
 
 #include "KeyboardController.h"
@@ -16,22 +17,32 @@ KeyboardController::KeyboardController(TankGameModel * model, TankGameView * vie
 
 void KeyboardController::keydown(unsigned char key)
 {
-    setPlayerSpeed(0.1);
     if (key == 'w') {
-        setPlayerVelocity(k3d::vec2(0.0, 1.0));
-    }
-    else if (key == 'a') {
-        setPlayerVelocity(k3d::vec2(-1.0, 0.0));
+        setPlayerSpeed(0.09);
     }
     else if (key == 's') {
-        setPlayerVelocity(k3d::vec2(0.0, -1.0));
+        setPlayerVelocity(-1.0 * getPlayerVelocity());
+    }
+    else if (key == 'a') {
+        k3d::mat4 m;
+        m.rotatef(k3d::vec3(0.0, 0.0, 1.0), 5.0);
+        k3d::vec3 t(m * k3d::vec3(getPlayerVelocity(), 0.0));
+        setPlayerVelocity(k3d::vec2(t.x, t.y));
     }
     else if (key == 'd') {
-        setPlayerVelocity(k3d::vec2(1.0, 0.0));
+        k3d::mat4 m;
+        m.rotatef(k3d::vec3(0.0, 0.0, 1.0), -5.0);
+        k3d::vec3 t(m * k3d::vec3(getPlayerVelocity(), 0.0));
+        setPlayerVelocity(k3d::vec2(t.x, t.y));
+    }
+    else if (key == 'h') {
+        std::cout << "pos: " << k3d::vec3(getPlayerPos(), 0.0) << " vel: " << k3d::vec3(getPlayerVelocity(), 0.0) << '\n';
     }
 }
 
 void KeyboardController::keyup(unsigned char key)
 {
-    setPlayerSpeed(0.0);
+    if (key == 'w') {
+        setPlayerSpeed(0.0);
+    }
 }

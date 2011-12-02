@@ -22,6 +22,9 @@ protected:
 public:
     TankGameController(TankGameModel * model, TankGameView * view);
 
+    const k3d::vec2 & getPlayerPos() const;
+    const k3d::vec2 & getPlayerVelocity() const;
+
     void setPlayerVelocity(const k3d::vec2 & velocity);
     void setPlayerSpeed(float speed);
 

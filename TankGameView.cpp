@@ -61,6 +61,7 @@ void TankGameView::drawLevel(const Level & level)
             if (map[x][y]) {
                 gl::mModelView = tMat;
                 gl::mModelView.translatef((float)x, (float)y, 0.0);
+
                 gl::sendMatrices();
 
                 gl::sendColor(1.0, 0.0, 0.0, 1.0); // Red walls
@@ -106,8 +107,9 @@ void TankGameView::drawTank(const Tank & tank)
     k3d::mat4 velRotation(_velRotation);
     k3d::mat4 aimRotation(_aimRotation);
 
-    gl::sendColor(0.1, 0.8, 0.29, 1.0); // Some shade of blue
+    gl::sendColor(0.1, 0.8, 0.29, 1.0); // Some shade of green
 
+#if 1
     gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.5, 0.0);
     gl::mModelView = gl::mModelView * velRotation;
     gl::mModelView.scalef(0.5, 0.5, 1.0);
@@ -120,6 +122,14 @@ void TankGameView::drawTank(const Tank & tank)
     gl::mModelView.scalef(0.5, 0.5, 1.0);
     gl::sendMatrices();
     tankHeadModel.draw();
+#else
+    gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.5, 0.0);
+    //gl::mModelView = gl::mModelView * velRotation;
+    gl::mModelView.scalef(0.8, 0.8, 0.0);
+    gl::mModelView.translatef(-0.5, -0.5, 0.0);
+    gl::sendMatrices();
+    cubeModel.draw();
+#endif
 
     gl::mModelView = tMat;
 }
@@ -147,7 +157,7 @@ void TankGameView::renderFrame()
 
     gl::mModelView.loadIdentity();
     // set the eye above the player looking down on him
-    gl::mModelView.lookAt(k3d::vec3(playerPos.x, playerPos.y - 1.5, 7.0),
+    gl::mModelView.lookAt(k3d::vec3(playerPos.x, playerPos.y, 7.0),
         k3d::vec3(playerPos.x, playerPos.y, 0.0), k3d::vec3(0.0, 1.0, 0.0));
 
     gl::vLight0 = k3d::vec3(4.0, 3.0, 20.0);

@@ -21,3 +21,13 @@ void TankGameController::setPlayerSpeed(float speed)
 {
     model->player.setSpeed(speed);
 }
+
+const k3d::vec2 & TankGameController::getPlayerPos() const
+{
+    return model->player.getPos();
+}
+
+const k3d::vec2 & TankGameController::getPlayerVelocity() const
+{
+    return model->player.getVelocity();
+}
