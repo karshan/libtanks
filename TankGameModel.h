@@ -29,8 +29,11 @@ private:
     vector<Tank>    enemies;
     vector<Missile> missiles;
 
+    void fireMissile();
+
     // helpers
     void moveTank(Tank & tank);
+    void moveMissile(Missile & missile);
     bool collideWithLevel(k3d::vec2 & pos, const k3d::vec2 & velocity, const k3d::vec2 & box);
 
 public:

@@ -7,9 +7,12 @@
  * Implementation of the TankGameView class.
  */
 
+#include <vector>
 #include <libk3d/k3d.h>
 
 #include "TankGameView.h"
+
+using std::vector;
 
 using k3d::gl;
 
@@ -26,12 +29,14 @@ TankGameView::TankGameView(TankGameModel * model) : model(model) {}
  */
 bool TankGameView::loadModels(const char *floorModelFname,
                               const char *cubeModelFname,
+                              const char *missileModelFname,
                               const char *tankHeadModelFname,
                               const char *tankTreadsModelFname)
 {
-    return floorModel.loadObj(floorModelFname) &
-    cubeModel.loadObj(cubeModelFname) &
-    tankHeadModel.loadObj(tankHeadModelFname) &
+    return floorModel.loadObj(floorModelFname) &&
+    cubeModel.loadObj(cubeModelFname) &&
+    missileModel.loadObj(missileModelFname) &&
+    tankHeadModel.loadObj(tankHeadModelFname) &&
     tankTreadsModel.loadObj(tankTreadsModelFname);
 }
 
@@ -74,6 +79,26 @@ void TankGameView::drawLevel(const Level & level)
 }
 
 /**
+ * drawMissile()
+ * helper function that actually renders a Missile object to the screen.
+ */
+void TankGameView::drawMissile(const Missile & missile)
+{
+    k3d::mat4 tMat = gl::mModelView;
+    const k3d::vec2 & pos = missile.getPos();
+
+    gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.34, 0.0);
+    gl::mModelView.scalef(0.2, 0.3, 0.5);
+    gl::sendMatrices();
+
+    gl::sendColor(1.0, 1.0, 1.0, 1.0);
+
+    missileModel.draw();
+
+    gl::mModelView = tMat;
+}
+
+/**
  * drawTank()
  * helper function that actually renders a Tank object to the screen.
  */
@@ -109,7 +134,6 @@ void TankGameView::drawTank(const Tank & tank)
 
     gl::sendColor(0.1, 0.8, 0.29, 1.0); // Some shade of green
 
-#if 1
     gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.5, 0.0);
     gl::mModelView = gl::mModelView * velRotation;
     gl::mModelView.scalef(0.5, 0.5, 1.0);
@@ -122,24 +146,8 @@ void TankGameView::drawTank(const Tank & tank)
     gl::mModelView.scalef(0.5, 0.5, 1.0);
     gl::sendMatrices();
     tankHeadModel.draw();
-#else
-    gl::mModelView.translatef(pos.x + 0.5, pos.y + 0.5, 0.0);
-    //gl::mModelView = gl::mModelView * velRotation;
-    gl::mModelView.scalef(0.8, 0.8, 0.0);
-    gl::mModelView.translatef(-0.5, -0.5, 0.0);
-    gl::sendMatrices();
-    cubeModel.draw();
-#endif
 
     gl::mModelView = tMat;
-}
-
-/**
- * drawMissile()
- * helper function that actually renders a Missile object to the screen.
- */
-void TankGameView::drawMissile(const Missile & missile)
-{
 }
 
 /**
@@ -154,6 +162,7 @@ void TankGameView::renderFrame()
     const Level & level = model->getLevel();
     const Tank & player = model->getPlayer();
     const k3d::vec2 & playerPos = player.getPos();
+    const vector<Missile> & missiles = model->getMissiles();
 
     gl::mModelView.loadIdentity();
     // set the eye above the player looking down on him
@@ -167,5 +176,9 @@ void TankGameView::renderFrame()
 
     if (player.getIsDead() == false) {
         drawTank(player);
+    }
+
+    for (unsigned i = 0; i < missiles.size(); i++) {
+        drawMissile(missiles[i]);
     }
 }

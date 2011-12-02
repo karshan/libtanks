@@ -71,6 +71,11 @@ const k3d::vec2 & Tank::getAim() const
     return aim;
 }
 
+int Tank::getId() const
+{
+    return id;
+}
+
 void Tank::setPos(const k3d::vec2 & pos)
 {
     this->pos = pos;

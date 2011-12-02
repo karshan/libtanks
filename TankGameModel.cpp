@@ -136,6 +136,17 @@ void TankGameModel::moveTank(Tank & tank)
     }
 }
 
+void TankGameModel::moveMissile(Missile & missile)
+{
+    const k3d::vec2 & pos = missile.getPos();
+    missile.setPos(pos + missile.getSpeed()*missile.getVelocity());
+}
+
+void TankGameModel::fireMissile()
+{
+    missiles.push_back(Missile(player.getId(), player.getPos() + 0.3*player.getAim(), player.getAim(), 0.1));
+}
+
 /**
  * step()
  * move everything one step
@@ -145,4 +156,6 @@ void TankGameModel::step()
     if (player.getIsDead() == false) {
         moveTank(player);
     }
+    for (unsigned i = 0; i < missiles.size(); i++)
+        moveMissile(missiles[i]);
 }

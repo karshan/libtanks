@@ -31,3 +31,8 @@ const k3d::vec2 & TankGameController::getPlayerVelocity() const
 {
     return model->player.getVelocity();
 }
+
+void TankGameController::fireMissile()
+{
+    model->fireMissile();
+}

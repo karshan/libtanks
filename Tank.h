@@ -32,6 +32,7 @@ public:
     const k3d::vec2 & getVelocity() const;
     float getSpeed() const;
     const k3d::vec2 & getAim() const;
+    int getId() const;
 
     void setPos(const k3d::vec2 & pos);
     void setVelocity(const k3d::vec2 & velocity);

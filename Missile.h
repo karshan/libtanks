@@ -28,6 +28,7 @@ public:
     const k3d::vec2 & getVelocity() const;
     float getSpeed() const;
 
+    void setPos(const k3d::vec2 & pos);
 };
 
 #endif // _MISSILE_H

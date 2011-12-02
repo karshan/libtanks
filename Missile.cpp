@@ -33,3 +33,8 @@ float Missile::getSpeed() const
 {
     return speed;
 }
+
+void Missile::setPos(const k3d::vec2 & pos)
+{
+    this->pos = pos;
+}

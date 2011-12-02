@@ -28,6 +28,8 @@ public:
     void setPlayerVelocity(const k3d::vec2 & velocity);
     void setPlayerSpeed(float speed);
 
+    void fireMissile();
+
 };
 
 #endif // _TANKGAMECONTROLLER_H
