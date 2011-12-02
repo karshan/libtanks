@@ -113,7 +113,7 @@ float max(float a, float b)
 
 // Collision detection for rotated rectangles
 k3d::vec2 collide(k3d::vec2 pos1, const k3d::vec2 & hw1, const k3d::vec2 & v1,
-                  const k3d::vec2 & pos2, const k3d::vec2 & hw2, const k3d::vec2 & v2)
+                  const k3d::vec2 & pos2, const k3d::vec2 & hw2, const k3d::vec2 & v2, bool & collided)
 {
     k3d::vec2 vn1(-v1.y, v1.x);
     k3d::vec2 a1((pos1 + (hw1.x*v1)) - (hw1.y*vn1));
@@ -126,6 +126,8 @@ k3d::vec2 collide(k3d::vec2 pos1, const k3d::vec2 & hw1, const k3d::vec2 & v1,
     k3d::vec2 b2((pos2 + (hw2.x*v2)) + (hw2.y*vn2));
     k3d::vec2 c2((pos2 - (hw2.x*v2)) + (hw2.y*vn2));
     k3d::vec2 d2((pos2 - (hw2.x*v2)) - (hw2.y*vn2));
+
+    collided = true;
 
     if (intersect(a1, b1, a2, b2)) {
         // TODO check if it is enough to go back that distance for the 1st 2 cases (corners) here
@@ -240,7 +242,33 @@ k3d::vec2 collide(k3d::vec2 pos1, const k3d::vec2 & hw1, const k3d::vec2 & v1,
         return pos1 - dist_point_to_line(a1, d2, a2)*vn2;
     }
 
+    collided = false;
     return pos1;
+}
+
+bool TankGameModel::collideWithLevel(k3d::vec2 & pos, const k3d::vec2 & velocity, const k3d::vec2 & box)
+{
+    const bool ** map = level.getMap();
+    int x = int(pos.x + 0.5);
+    int y = int(pos.y + 0.5);
+    bool collided = false;
+    bool check; // temporary...
+
+    k3d::vec2 wallbox(0.5, 0.5);
+    k3d::vec2 wallvelocity(1.0, 0.0);
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            if (x + i < 0 || x + i >= level.getWidth() ||
+                y + j < 0 || y + j >= level.getHeight()) {
+                continue;
+            }
+            if (map[x + i][y + j]) {
+                pos = collide(pos, box, velocity, k3d::vec2(x + i, y + j), wallbox, wallvelocity, check);
+                collided |= check;
+            }
+        }
+    }
+    return collided;
 }
 
 void TankGameModel::moveTank(Tank & tank)
@@ -248,25 +276,22 @@ void TankGameModel::moveTank(Tank & tank)
     const k3d::vec2 & pos = tank.getPos();
     float speed = tank.getSpeed();
     const k3d::vec2 & velocity = tank.getVelocity();
-    const bool ** map = level.getMap();
 
-    k3d::vec2 newPos = pos + speed * velocity;
-    tank.setPos(newPos);
     k3d::vec2 tankbox(0.3, 0.15); // width/2 by height/2 of collision box for tank
-    k3d::vec2 wallbox(0.5, 0.5);
-    k3d::vec2 wallvelocity(1.0, 0.0);
+    k3d::vec2 tmpPos(pos);
+    collideWithLevel(tmpPos, velocity, tankbox);  // get into a consistent state
+    tank.setPos(tmpPos);
 
-    int x = int(newPos.x + 0.5);
-    int y = int(newPos.y + 0.5);
-    for (int i = -1; i <= 1; i++) {
-        for (int j = -1; j <= 1; j++) {
-            if (x + i < 0 || x + i > level.getWidth() ||
-                y + j < 0 || y + j > level.getHeight())
-                continue;
-            if (map[x + i][y + j] == true) {
-                tank.setPos(collide(tank.getPos(), tankbox, velocity,
-                    k3d::vec2(x + i, y + j), wallbox, wallvelocity));
-            }
+    k3d::vec2 newPos[3];
+    newPos[0] = pos + speed * velocity;
+    newPos[1] = pos + speed * k3d::vec2(velocity.x, 0.0);
+    newPos[2] = pos + speed * k3d::vec2(0.0, velocity.y);
+
+    for (int ind = 0; ind < 3; ind++) {
+        tmpPos = newPos[ind];
+        if (!collideWithLevel(tmpPos, velocity, tankbox)) {
+            tank.setPos(newPos[ind]);
+            return;
         }
     }
 }

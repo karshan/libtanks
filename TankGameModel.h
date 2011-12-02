@@ -31,6 +31,7 @@ private:
 
     // helpers
     void moveTank(Tank & tank);
+    bool collideWithLevel(k3d::vec2 & pos, const k3d::vec2 & velocity, const k3d::vec2 & box);
 
 public:
     TankGameModel();

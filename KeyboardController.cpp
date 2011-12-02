@@ -18,7 +18,7 @@ KeyboardController::KeyboardController(TankGameModel * model, TankGameView * vie
 void KeyboardController::keydown(unsigned char key)
 {
     if (key == 'w') {
-        setPlayerSpeed(0.09);
+        setPlayerSpeed(0.06);
     }
     else if (key == 's') {
         setPlayerVelocity(-1.0 * getPlayerVelocity());
