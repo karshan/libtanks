@@ -66,6 +66,7 @@ void TankGameView::drawLevel(const Level & level)
             if (map[x][y]) {
                 gl::mModelView = tMat;
                 gl::mModelView.translatef((float)x, (float)y, 0.0);
+                gl::mModelView.scalef(1.0, 1.0, 0.5);
 
                 gl::sendMatrices();
 
@@ -184,11 +185,13 @@ void TankGameView::renderFrame()
 
     gl::mModelView.loadIdentity();
     // set the eye above the player looking down on him
-    gl::mModelView.lookAt(k3d::vec3(playerPos.x, playerPos.y, 7.0),
+    gl::mModelView.lookAt(k3d::vec3(playerPos.x, playerPos.y -2.0, 8.0),
         k3d::vec3(playerPos.x, playerPos.y, 0.0), k3d::vec3(0.0, 1.0, 0.0));
 
     gl::vLight0 = k3d::vec3(4.0, 3.0, 20.0);
     gl::sendLight0();
+
+    gl::mModelView.rotatef(k3d::vec3(0.0, 0.0, 1.0), 6.0);
 
     drawLevel(level);
 
