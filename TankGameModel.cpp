@@ -174,7 +174,7 @@ void TankGameModel::moveMissile(Missile & missile)
     }
     for (unsigned i = 0; i < enemies.size(); i++) {
         if (collideWithTank(tmpPos, velocity, missileBox, enemies[i])) {
-            if (missile.getTankId() != enemies[i].getId()) {
+            if (missile.getTankId() != enemies[i].getId() && enemies[i].getIsDead() == false) {
                 enemies[i].setIsDead(true);
                 missile.setExploding(true);
                 return;
